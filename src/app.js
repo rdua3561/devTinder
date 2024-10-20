@@ -8,41 +8,32 @@ app.listen(7777, ()=>{
     console.log("server is successfully listening to port 7777")
 })
 
-// //Request Handler for /test
-// app.use("/test/2",(req,res)=>{
 
-//     res.send("hello from the serverssssssssssssss 22222222");
+app.use("/admin", (req, res,next)=>{
+    const token="xyz";
+    const isAdminAuthorized= token==="xyz";
 
-// });
-
-// //Request Handler for /test
-// app.use("/test",(req,res)=>{
-
-//     res.send("hello from the server");
-
-// });
-
-// //Request Handler
-// app.use("/",(req,res)=>{
-
-//     res.send("server");
-
-// });
-
-app.use("/user",(req,res,next)=>{
-
-    console.log("hello");
-
-    res.send("Response 1");
-    next();
-
-}, (req,res)=>{
-
-    console.log("hello 2");
-
-    res.send("Response 2");
+    if(!isAdminAuthorized)
+    {
+        res.status(401).send("Unauthorized");
+    }
+ 
+    else{
+       next();
+    }
 
 });
-//Our Port will through an error when you are trying to send another response to the same URL .we have 
-//already send the res to client, you can't change the request, tcp connection made b/w client and server.
-//It closes the tcp connection when it gets the 1st response from the server
+
+app.get("/user", (req,res) => {
+// this will not check isAdminAuthorized
+    res.send("User Data Sent");
+})
+
+app.get("/admin/deleteUser", (req,res) => {
+
+    res.send("User Deleated Successfully")
+})
+
+app.get("/admin/getAllUser", (req,res) => {
+    res.send("Data send Successfully")
+})
