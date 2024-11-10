@@ -1,31 +1,50 @@
 const express = require("express");
 const app= express();
-const {adminAuth, userAuth} = require("./Middlewares/auth");
+//const {adminAuth, userAuth} = require("./Middlewares/auth");
+const connectDB = require("./config/database");
+const User = require("./models/user");
 
-//Once you created the server then only you can listen to the incomming requests
-app.listen(7777, ()=>{
+app.use(express.json());// middleware that convert JSON object to Javascript Object for whole code (Globally) and then add to req
+app.post("/signup", async (req,res)=>{ //Pushing the data to the database
 
-    console.log("server is successfully listening to port 7777")
+    console.log(req.body);
+    // const userObj={
+    //     firstName: "MS",
+    //     lastName: "Dhoni",
+    //     emailId: "dhoni@gmail.com",
+    //     password: "DhoniBhai"
+    // }
+
+    // creating a new Instance of a User Model and passing the data(userObj) 
+    // const user = new User(userObj);
+    const user = new User(req.body);// req.body will be converted to Javascript Object using middleware
+
+    try {
+
+        await user.save();
+        res.send("User added successfully");
+
+    } catch(err)
+    {
+        res.status(400).send("Error Saving the user:" + err.message)
+    }
+    
 })
 
 
-app.use("/admin", adminAuth);
 
-app.get("/user/login", (req,res) => {
+connectDB().then(()=>{
+    //Handle Happy Case
+    console.log("Database Connection Established.....");
 
-    res.send("User loggedIn Successfully");
+    app.listen(7777, ()=>{
+
+        console.log("server is successfully listening to port 7777");
+    })
+}).catch(err=>{
+
+    console.error("Error Connecting to Database", err);
+   
 })
 
-app.get("/user/data", userAuth, (req,res) => {
 
-    res.send("User Data Sent");
-})
-
-app.get("/admin/deleteUser", (req,res) => {
-
-    res.send("User Deleated Successfully")
-})
-
-app.get("/admin/getAllUser", (req,res) => {
-    res.send("All user Data send Successfully")
-})
