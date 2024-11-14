@@ -21,7 +21,7 @@ app.post("/signup", async (req,res)=>{ //Pushing the data to the database
 
     try {
 
-        await user.save();
+        await user.save(); // saving to database
         res.send("User added successfully");
 
     } catch(err)
@@ -29,6 +29,43 @@ app.post("/signup", async (req,res)=>{ //Pushing the data to the database
         res.status(400).send("Error Saving the user:" + err.message)
     }
     
+})
+
+//Get particular user by email
+app.get("/user", async (req, res)=>{
+    const userEmail=req.body.emailId;
+
+    try{
+
+       const users =  await User.find({emailId:userEmail});
+       if(users.length===0)
+        {
+            res.status(404).send("User not found");
+        }
+       else
+        {
+            res.send(users);
+        }
+      
+    }
+
+    catch(err){
+        res.status(400).send("Error Getting the user:" + err.message)
+    }
+});
+
+//Feed Api- GET /feet - get all users from the database
+
+app.get("/feed", async (req,res)=>{
+
+    try{
+        const users= await User.find({});
+        res.send(users);
+
+    }
+    catch(err){
+        res.status(400).send("Error Getting the user:" + err.message)
+    }
 })
 
 
