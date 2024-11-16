@@ -55,7 +55,6 @@ app.get("/user", async (req, res)=>{
 });
 
 //Feed Api- GET /feet - get all users from the database
-
 app.get("/feed", async (req,res)=>{
 
     try{
@@ -65,6 +64,22 @@ app.get("/feed", async (req,res)=>{
     }
     catch(err){
         res.status(400).send("Error Getting the user:" + err.message)
+    }
+})
+
+//Update data of the User
+app.patch("/user", async (req,res)=>
+{
+    const userId= req.body.userId;
+    const data= req.body;
+    try{
+
+        //await User.findByIdAndUpdate({_id:userId}, data);
+        await User.findByIdAndUpdate(userId, data);
+        res.send("User updated successfully");
+    }
+    catch(err){
+        res.status(400).send("Error updating the user:" + err.message)
     }
 })
 
