@@ -169,7 +169,6 @@ connectDB().then(()=>{
         console.log("server is successfully listening to port 7777");
     })
 }).catch(err=>{
-
     console.error("Error Connecting to Database", err);
    
 })
